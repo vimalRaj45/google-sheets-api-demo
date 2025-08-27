@@ -1,17 +1,19 @@
+
+
 const { google } = require('googleapis');
 
-// Parse the service account JSON from environment variable
-// In Vercel, set GOOGLE_SERVICE_ACCOUNT_JSON and SPREADSHEET_ID in Project Settings → Environment Variables
-const serviceAccount = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
-const SPREADSHEET_ID = process.env.SPREADSHEET_ID; // your sheet ID set in env
+const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
+const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
+const SPREADSHEET_ID = process.env.SPREADSHEET_ID;
 
 async function getAuth() {
   const auth = new google.auth.GoogleAuth({
-    credentials: serviceAccount,
-    scopes: ['https://www.googleapis.com/auth/spreadsheets'], // read/write scope
+    credentials,
+    scopes: SCOPES,
   });
   return auth.getClient();
 }
+
 
 async function readSheet(range) {
   const authClient = await getAuth();
