@@ -1,0 +1,25 @@
+{
+  "name": "eventorgainzer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "googleSheets.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vimalRaj45/google-sheets-api-demo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vimalRaj45/google-sheets-api-demo/issues"
+  },
+  "homepage": "https://github.com/vimalRaj45/google-sheets-api-demo#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "googleapis": "^158.0.0"
+  }
+}
