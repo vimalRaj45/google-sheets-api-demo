@@ -1,0 +1,1785 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=devi
+        ce-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+
+        /* Navigation */
+        .nav-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .nav-container button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+            flex: 1 1 auto;
+            min-width: 120px;
+        }
+
+        .nav-container button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Content Sections */
+        .content-section {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        th {
+            background-color: #3498db;
+            color: white;
+            text-align: left;
+            padding: 12px;
+            position: sticky;
+            top: 0;
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #ddd;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        tr:hover {
+            background-color: #e9f7fe;
+        }
+
+        /* Buttons */
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            margin: 2px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background-color: #e74c3c;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-success {
+            background-color: #2ecc71;
+        }
+
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+
+        .btn-warning {
+            background-color: #f39c12;
+        }
+
+        .btn-warning:hover {
+            background-color: #d35400;
+        }
+
+        /* Forms */
+        input[type="text"],
+        input[type="email"],
+        select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 5px 0;
+            width: 200px;
+        }
+
+        form {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        /* Status Badges */
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .badge-pending {
+            background-color: #f39c12;
+            color: white;
+        }
+
+        .badge-approved {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .badge-admin {
+            background-color: #9b59b6;
+            color: white;
+        }
+
+        .badge-mentor {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .badge-student {
+            background-color: #7f8c8d;
+            color: white;
+        }
+
+        /* Stats Cards */
+        .stats-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .stat-card {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 10px 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .stats-container {
+                flex-direction: column;
+            }
+        }
+
+        /* Role-specific colors */
+        .role-admin {
+            background-color: rgba(155, 89, 182, 0.1);
+        }
+
+        .role-mentor {
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+
+        .role-student {
+            background-color: rgba(127, 140, 141, 0.1);
+        }
+
+        /* Target Management Styles */
+.target-controls {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.target-form {
+    flex: 1;
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.target-form h3 {
+    margin-top: 0;
+    color: #2c3e50;
+    font-size: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.target-form select,
+.target-form input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.target-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.target-form button:hover {
+    background-color: #2980b9;
+}
+
+/* Progress bar styles */
+.progress-container {
+    background-color: #ecf0f1;
+    border-radius: 4px;
+    height: 20px;
+    margin-top: 5px;
+}
+
+.progress-bar {
+    height: 100%;
+    border-radius: 4px;
+    text-align: center;
+    color: white;
+    font-size: 12px;
+    line-height: 20px;
+}
+    </style>
+</head>
+<body>
+    <h1>Admin Dashboard</h1>
+    
+    <!-- Navigation -->
+    <div class="nav-container">
+        <button onclick="showSection('dashboard-section')">Dashboard</button>
+        <button onclick="showSection('students-section')">Students</button>
+        <button onclick="showSection('mentors-section')">Mentors</button>
+        <button onclick="showSection('approvals-section')">Pending Approvals</button>
+        <button onclick="showSection('referrals-section')">Referrals</button>
+        <button onclick="showSection('unassigned-section')">Unassigned Students</button>
+       <button onclick="showSection('targets-section')">Target Management</button>
+    </div>
+
+    <!-- Dashboard Section -->
+<div id="dashboard-section" class="content-section">
+    <h2>Dashboard</h2>
+    <input type="search" id="dashboard-search" placeholder="Search assignments..." oninput="filterDashboard()" style="margin-bottom: 15px; padding: 8px; width: 100%; max-width: 400px;">
+    <div class="stats-container" id="stats-data">
+            <!-- Stats will be loaded here -->
+        </div>
+        <!-- 📋 All Assignments: Mentors & Students -->
+<h4 class="mt-5">📋 All Assigned Users</h4>
+<div class="table-responsive">
+    <table class="table table-bordered table-hover mt-2">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Event</th>
+                <th>Target</th>
+                <th>Attained</th>
+                <th>Assigned On</th>
+            </tr>
+        </thead>
+        <tbody id="targets-table-body">
+            <!-- JS will inject here -->
+        </tbody>
+    </table>
+</div>
+
+        <h3>Top Referrers</h3>
+        <div id="leaderboard-data">Loading leaderboard...</div>
+    </div>
+
+
+    
+
+  
+
+    <!-- Students Section -->
+  <div id="students-section" class="content-section">
+    <h2>All Students</h2>
+    <input type="search" id="student-search" placeholder="Search students..." oninput="filterStudents()" style="margin-bottom: 15px; padding: 8px; width: 100%; max-width: 400px;">
+    <div id="students-data">Loading students...</div>
+        
+        <h3>Assign Students to Mentor</h3>
+        <div>
+            <input type="text" id="assign-mentor-id" placeholder="Mentor ID">
+            <input type="text" id="assign-student-ids" placeholder="Student IDs (comma separated)">
+            <button onclick="assignStudents()">Assign</button>
+        </div>
+    </div>
+
+
+
+   <div id="targets-section" class="content-section">
+    <h2>Target Management</h2>
+    
+    
+    <div class="target-controls">
+        <div class="target-form">
+            <h3>Set Mentor Target</h3>
+            <form id="set-mentor-target-form" onsubmit="event.preventDefault(); setMentorTarget();">
+                <select id="mentor-target-select" required>
+                    <option value="">Select Mentor</option>
+                </select>
+                <select id="mentor-event-select" required>
+                    <option value="">Select Event</option>
+                </select>
+                <input type="number" id="mentor-target-value" placeholder="Target Value">
+                <button type="submit">Set Target</button>
+            </form>
+            <div class="target-form">
+    <h3>Set Intern/Admin-Specific Target</h3>
+    <form id="set-intern-target-form" onsubmit="event.preventDefault(); setInternAdminTarget();">
+        <select id="mentor-intern-select" required>
+            <option value="">Select Mentor</option>
+        </select>
+        <input type="number" id="mentor-intern-target-value" placeholder="Intern/Admin Target Value" required>
+        <button type="submit">Set Intern Target</button>
+    </form>
+     
+</div>
+
+        </div>
+       
+        <div class="target-form">
+         
+
+            <h3>Set Student Target</h3>
+            <form id="set-student-target-form" onsubmit="event.preventDefault(); setStudentTarget();">
+                <select id="student-target-select" required>
+                    <option value="">Select Student</option>
+                </select>
+                <select id="student-event-select" required>
+                    <option value="">Select Event</option>
+                </select>
+                <input type="number" id="student-target-value" placeholder="Target Value" required>
+                <button type="submit">Set Target</button>
+            </form>
+        </div>
+    </div>
+     
+    <h3>Current Targets</h3>
+    <div id="targets-data">Loading targets data...</div>
+     <div id="mentor-intern-data" ></div>
+      <h3>Current Targets</h3>
+    <div id="targets-data"></div>
+     <div id="mentor-intern-data" ></div>
+     <div class="container">
+    <h2 class="mb-4">All Students (Intern Attained)</h2>
+    <table class="table table-bordered table-striped" id="studentsTable">
+      <thead class="table-dark">
+        <tr>
+          <th>#</th>
+          <th>Student Name</th>
+          <th>Student Email</th>
+          <th>Intern Attained</th>
+          <th>Mentor Name</th>
+          <th>Mentor Email</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Data rows will be inserted here -->
+      </tbody>
+    </table>
+  </div>
+</div>
+   
+    <!-- Student Detail Section -->
+    <div id="student-detail-section" class="content-section">
+       
+        <div id="student-detail"></div>
+    </div>
+
+    <!-- Mentors Section -->
+<div id="mentors-section" class="content-section">
+    <h2>Mentors</h2>
+    <input type="search" id="mentor-search" placeholder="Search mentors..." oninput="filterMentors()" style="margin-bottom: 15px; padding: 8px; width: 100%; max-width: 400px;">
+    <div id="mentors-data">Loading mentors...</div>
+    </div>
+
+    <!-- Mentor Downline Section -->
+    <div id="mentor-downline-section" class="content-section">
+        <div id="mentor-downline"></div>
+    </div>
+
+    <!-- Approvals Section -->
+<div id="approvals-section" class="content-section">
+    <h2>Pending Approvals</h2>
+    <input type="search" id="approval-search" placeholder="Search pending approvals..." oninput="filterApprovals()" style="margin-bottom: 15px; padding: 8px; width: 100%; max-width: 400px;">
+    <div id="approvals-data">Loading pending approvals...</div>
+    </div>
+
+    <!-- Referrals Section -->
+<div id="referrals-section" class="content-section">
+    <h2>Referral System</h2>
+    <input type="search" id="referral-search" placeholder="Search referrals..." oninput="filterReferrals()" style="margin-bottom: 15px; padding: 8px; width: 100%; max-width: 400px;">
+    <div id="referral-data">Loading referral data...</div>
+    </div>
+
+    <!-- Referral Tree Section -->
+    <div id="referral-tree-section" class="content-section">
+        <div id="referral-tree"></div>
+    </div>
+
+
+
+    <!-- Unassigned Students Section -->
+<div id="unassigned-section" class="content-section">
+    <h2>Unassigned Students & Attainment</h2>
+    <input type="search" id="unassigned-search" placeholder="Search unassigned students..." oninput="filterUnassigned()" style="margin-bottom: 15px; padding: 8px; width: 100%; max-width: 400px;">
+    <div id="unassigned-data">Loading unassigned students...</div>
+    </div>
+
+    <script>
+
+
+ // ⛔ Disable right-click and certain dev tools
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', function(e) {
+  if (
+    e.key === 'F12' ||
+    (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) ||
+    (e.ctrlKey && ['U', 'S', 'P'].includes(e.key.toUpperCase()))
+  ) {
+    e.preventDefault();
+    showDevPopup();
+  }
+});
+
+// 🚫 Developer Tools Blocked Popup (SweetAlert2)
+function showDevPopup() {
+ console.warn('Developer tools are disabled for this page.');
+}
+        const BASE_URL = 'https://eventdb.onrender.com';
+        let currentStudentId = null;
+        let currentMentorId = null;
+
+
+   async function loadMentorInternTargets() {
+    try {
+        const response = await fetch(`${BASE_URL}/admin/targets`);
+        const mentors = await response.json();
+
+        if (!Array.isArray(mentors)) {
+            alert('Invalid response format');
+            return;
+        }
+
+        const mentorOnly = mentors.filter(m => m.role === 'mentor');
+
+        let html = `
+            <h3>Mentor Intern Targets</h3>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Intern Target</th>
+                        <th>Intern Attained</th>
+                        <th>Intern Target Achieved?</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        mentorOnly.forEach(m => {
+            html += `
+                <tr>
+                    <td>${m.name}</td>
+                    <td>${m.admin_intern_target}</td>
+                    <td>${m.admin_intern_attained}</td>
+                    <td>${m.intern_target_achieved ? '✅ Yes' : '❌ No'}</td>
+                </tr>
+            `;
+        });
+
+        html += '</tbody></table>';
+        document.getElementById('mentor-intern-data').innerHTML = html;
+
+    } catch (error) {
+        console.error('Failed to load mentor intern targets:', error);
+        alert('Error loading mentor intern targets');
+    }
+}
+
+      
+
+
+        // Initial load
+        window.onload = function() {
+            loadDashboard();
+            loadMentorInternTargets();
+        };
+
+        // Navigation functions
+        function showSection(sectionId) {
+             document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
+    document.getElementById(sectionId).style.display = 'block';
+            
+            // Load data for the section
+            switch(sectionId) {
+                case 'dashboard-section': loadDashboardData(); break;
+                case 'students-section': loadAllStudents(); break;
+                case 'mentors-section': loadAllMentors(); break;
+                case 'approvals-section': loadPendingApprovals(); break;
+                case 'referrals-section': loadReferralData(); break;
+                case 'unassigned-section': loadUnassignedStudents(); break;
+                 case 'targets-section': 
+            loadEvents().then(loadTargetsSection); 
+            break;
+            }
+        }
+
+        function loadDashboard() {
+            showSection('dashboard-section');
+        }
+
+
+        // Load events for dropdowns
+async function loadEvents() {
+    try {
+        const response = await fetch(`${BASE_URL}/api/events`);
+        const events = await response.json();
+        
+        let options = '<option value="">Select Event</option>';
+        events.forEach(event => {
+            options += `<option value="${event.id}">${event.title}</option>`;
+        });
+        
+        // Set the options for both mentor and student event selects
+        document.getElementById('mentor-event-select').innerHTML = options;
+        document.getElementById('student-event-select').innerHTML = options;
+        
+        return events;
+    } catch (error) {
+        console.error('Error loading events:', error);
+        return [];
+    }
+}
+
+// Updated loadTargetsSection function
+async function loadTargetsSection() {
+    try {
+        const [mentorsRes, studentsRes, targetsRes, eventsRes] = await Promise.all([
+            fetch(`${BASE_URL}/admin/mentors`),
+            fetch(`${BASE_URL}/admin/students`),
+            fetch(`${BASE_URL}/api/targets/admin/view-all`),
+            loadEvents()
+        ]);
+
+        const [mentors, students, targets] = await Promise.all([
+            mentorsRes.json(),
+            studentsRes.json(),
+            targetsRes.json()
+        ]);
+
+        function getAssignerName(assignerId, mentors, students) {
+    // Try to find in mentors
+    const mentor = mentors.find(m => m.mentor_id == assignerId);
+    if (mentor) return `${mentor.mentor_name} (Mentor)`;
+
+    // Try to find in students
+    const student = students.find(s => s.id == assignerId);
+    if (student) return `${student.first_name} ${student.last_name} (${student.role})`;
+
+    return `ID: ${assignerId}`;
+}
+
+
+        // Populate mentor dropdown
+        document.getElementById('mentor-target-select').innerHTML =
+            '<option value="">Select Mentor</option>' +
+            mentors.map(m => `<option value="${m.mentor_id}">${m.mentor_name} (ID: ${m.mentor_id})</option>`).join('');
+
+
+        // Populate mentor dropdown for intern/admin target
+     document.getElementById('mentor-intern-select').innerHTML =
+    '<option value="">Select Mentor</option>' +
+    mentors.map(m => `<option value="${m.mentor_id}">${m.mentor_name} (ID: ${m.mentor_id})</option>`).join('');
+    
+
+       document.getElementById('student-target-select').innerHTML =
+  '<option value="">Select Student</option>' +
+  students
+    .filter(s => s.role === 'student') // only include role = student
+    .map(s => `<option value="${s.id}">${s.first_name} ${s.last_name} (ID: ${s.id})</option>`)
+    .join('');
+
+
+        // Display targets table
+        document.getElementById('targets-data').innerHTML = `
+            <table border="1">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Event</th>
+                    <th>Target</th>
+                    <th>Attained</th>
+                    <th>Assigned By</th>
+                    <th>Assigned At</th>
+                    <th>Actions</th>
+                </tr>
+                ${targets.data.map(target => `
+                    <tr class="role-${target.role.toLowerCase()}">
+                        <td>${target.id}</td>
+                        <td>${target.first_name} ${target.last_name}</td>
+                        <td>${getRoleBadge(target.role)}</td>
+                        <td>${target.event_title}</td>
+                        <td>${target.target}</td>
+                        <td>${target.attained}</td>
+                        <td>${getAssignerName(target.assigned_by, mentors, students)}</td>
+                        <td>${new Date(target.assigned_at).toLocaleString()}</td>
+                        <td>
+                           <button class="btn-sm btn-success" onclick="updateTarget(${target.id})">Edit</button>
+                            <button class="btn-danger" onclick="deleteTarget(${target.id})">Delete</button>
+                        </td>
+                    </tr>
+                `).join('')}
+            </table>
+        `;
+    } catch (error) {
+        console.error('Error loading targets:', error);
+        document.getElementById('targets-data').innerHTML = 'Error loading targets';
+    }
+}
+
+
+async function updateTarget(id) {
+    const targetInput = prompt(`Enter new target value for ID ${id}:`);
+    if (targetInput === null) return; // Cancelled
+    const target = parseInt(targetInput);
+
+    if (isNaN(target)) {
+        alert('Target and Attained must be valid numbers.');
+        return;
+    }
+
+    try {
+        const response = await fetch(`${BASE_URL}/api/targets/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ target})
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            alert('Target updated successfully');
+            loadTargetsSection();
+        } else {
+            throw new Error(result.error || 'Failed to update target');
+        }
+    } catch (error) {
+        console.error('Error updating target:', error);
+        alert('Failed to update target');
+    }
+}
+
+
+async function setMentorTarget() {
+    const mentorId = document.getElementById('mentor-target-select').value;
+    const eventId = document.getElementById('mentor-event-select').value;
+    const targetValue = parseInt(document.getElementById('mentor-target-value').value);
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    if (!mentorId || !eventId || isNaN(targetValue)) {
+        alert('Please fill all fields correctly');
+        return;
+    }
+
+    try {
+        // 🔹 Assign mentor target for the event
+        const response = await fetch(`${BASE_URL}/api/targets/assign-to-mentor`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                mentor_id: mentorId,
+                event_id: eventId,
+                target: targetValue,
+                assigned_by: user?.id
+            })
+        });
+
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || 'Failed to assign mentor target');
+
+        alert('✅ Mentor target assigned successfully!');
+        loadTargetsSection();
+
+    } catch (error) {
+        console.error('❌ Error assigning mentor target:', error);
+        alert(error.message || 'An error occurred while assigning the mentor target.');
+    }
+}
+
+async function setInternAdminTarget() {
+    const mentorId = document.getElementById('mentor-intern-select').value;
+    const internTargetValue = parseInt(document.getElementById('mentor-intern-target-value').value);
+    console.log('Setting intern target for mentor ID:', mentorId, 'with value:', internTargetValue);
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    if (!mentorId || isNaN(internTargetValue)) {
+        alert('Please select a mentor and enter a valid intern target value.');
+        return;
+    }
+
+    try {
+        const response = await fetch(`${BASE_URL}/admin/set-target`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                user_id: mentorId,
+                target: 0, // can be 0 if not used
+                admin_intern_target: internTargetValue,
+                is_mentor: true
+            })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.error || 'Failed to assign intern/admin target');
+        }
+
+        alert('✅ Intern/admin-specific target assigned successfully!');
+        loadTargetsSection();
+
+    } catch (error) {
+        console.error('❌ Error assigning intern target:', error);
+        alert(error.message || 'An error occurred while assigning intern target.');
+    }
+}
+
+
+
+// Set student target using the new endpoint
+async function setStudentTarget() {
+    const studentId = document.getElementById('student-target-select').value;
+    const eventId = document.getElementById('student-event-select').value;
+    const targetValue = document.getElementById('student-target-value').value;
+    
+    if (!studentId || !eventId || !targetValue) {
+        alert('Please fill all fields');
+        return;
+    }
+
+    try {
+        const response = await fetch(`${BASE_URL}/api/targets/assign-to-student-by-admin`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                student_id: studentId,
+                event_id: eventId,
+                target: targetValue,
+                assigned_by: localStorage.getItem('user')?.id || 10000 // Assuming user object is available
+            })
+        });
+
+        const result = await response.json();
+        
+        if (response.ok) {
+            alert('Target assigned to student successfully!');
+            loadTargetsSection();
+        }
+        else if (response.status === 409) {
+      // Handle conflict: already assigned
+      alert(`⚠️ ${result.error || 'Target already assigned to this student for this event by another admin.'}`);
+    }
+         else {
+            throw new Error(result.error || 'Failed to assign target');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to assign target to student');
+    }
+}
+
+// Delete target
+async function deleteTarget(targetId) {
+    if (!confirm('Are you sure you want to delete this target assignment?')) return;
+    
+    try {
+        const response = await fetch(`${BASE_URL}/api/targets/${targetId}`, {
+            method: 'DELETE'
+        });
+
+        if (response.ok) {
+            alert('Target deleted successfully!');
+            loadTargetsSection();
+        } else {
+            throw new Error('Failed to delete target');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to delete target');
+    }
+}
+
+
+
+
+     async function loadDashboardData() {
+    try {
+        // First fetch the pending approvals count
+        const approvalsResponse = await fetch(`${BASE_URL}/students`);
+        const allStudents = await approvalsResponse.json();
+        const pendingApprovalsCount = allStudents.filter(student => student.status === 'pending').length;
+
+        // Then fetch the targets data as before
+        const res = await fetch(`${BASE_URL}/api/targets/admin/view-all`);
+        const result = await res.json();
+        const data = result.data || [];
+
+        // 🔹 Compute stats
+        const totalAssignedTargets = data.length;
+        const uniqueMentors = new Set(data.filter(d => d.role === 'mentor').map(d => d.user_id));
+        const uniqueEvents = new Set(data.map(d => d.event_id));
+        const totalAttained = data.reduce((sum, d) => sum + (d.attained || 0), 0);
+
+        // Add pending approvals to the stats cards
+        const statsHTML = `
+            <div class="stat-card" onclick="showSection('approvals-section')" style="cursor: pointer;">
+                <div>Pending Approvals</div>
+                <div class="stat-value">${pendingApprovalsCount}</div>
+            </div>
+            <div class="stat-card">
+                <div>Total Assigned Targets</div>
+                <div class="stat-value">${totalAssignedTargets}</div>
+            </div>
+            <div class="stat-card">
+                <div>Total Mentors Assigned</div>
+                <div class="stat-value">${uniqueMentors.size}</div>
+            </div>
+            <div class="stat-card">
+                <div>Total Events</div>
+                <div class="stat-value">${uniqueEvents.size}</div>
+            </div>
+            <div class="stat-card">
+                <div>Total Attained</div>
+                <div class="stat-value">${totalAttained}</div>
+            </div>
+        `;
+        document.getElementById('stats-data').innerHTML = statsHTML;
+
+        // 🔹 Build leaderboard for mentors
+        const mentorMap = new Map();
+        data.forEach(entry => {
+            if (entry.role === 'mentor') {
+                const fullName = `${entry.first_name} ${entry.last_name}`;
+                if (!mentorMap.has(fullName)) {
+                    mentorMap.set(fullName, { attained: 0 });
+                }
+                mentorMap.get(fullName).attained += entry.attained || 0;
+            }
+        });
+
+        const topMentors = Array.from(mentorMap.entries())
+            .sort((a, b) => b[1].attained - a[1].attained)
+            .slice(0, 5);
+
+        let leaderboardHTML = '<ol>';
+        topMentors.forEach(([name, info]) => {
+            leaderboardHTML += `<li><strong>${name}</strong> - ${info.attained} attained</li>`;
+        });
+        leaderboardHTML += '</ol>';
+        document.getElementById('leaderboard-data').innerHTML = leaderboardHTML;
+
+        // 📋 Fill full assignments table for both mentors & students
+        let tableHTML = '';
+        data.forEach((item, index) => {
+            const fullName = `${item.first_name} ${item.last_name}`;
+            const role = item.role.charAt(0).toUpperCase() + item.role.slice(1);
+            const assignedDate = new Date(item.assigned_at).toLocaleDateString();
+
+            tableHTML += `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${fullName}</td>
+                    <td><span class="badge ${role === 'Mentor' ? 'bg-primary' : 'bg-secondary'}">${role}</span></td>
+                    <td>${item.event_title}</td>
+                    <td>${item.target}</td>
+                    <td>${item.attained}</td>
+                    <td>${assignedDate}</td>
+                </tr>
+            `;
+        });
+        document.getElementById('targets-table-body').innerHTML = tableHTML;
+
+    } catch (error) {
+        console.error('Error loading dashboard:', error);
+        alert('Failed to load dashboard data');
+    }
+}
+
+        // Student management functions
+        async function loadAllStudents() {
+            try {
+                const response = await fetch(`${BASE_URL}/admin/students`);
+                const students = await response.json();
+                
+                let tableHTML = `
+                    <table border="1">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Contact</th>
+                            <th>Email</th>
+                            <th>College</th>
+                            <th>Status</th>
+                            <th>Role</th>
+                            <th>Referrer</th>
+                            <th>Actions</th>
+                        </tr>
+                `;
+                
+                students.forEach(student => {
+                    const roleClass = `role-${student.role.toLowerCase()}`;
+                    const roleBadge = getRoleBadge(student.role);
+                    
+                    tableHTML += `
+                        <tr class="${roleClass}">
+                            <td>${student.id}</td>
+                            <td>${student.first_name} ${student.last_name}</td>
+                            <td>${student.contact_number}</td>
+                            <td>${student.email}</td>
+                            <td>${student.college_name}</td>
+                            <td><span class="badge badge-${student.status.toLowerCase()}">${student.status}</span></td>
+                            <td>${roleBadge}</td>
+                            <td>${student.referrer_name || 'N/A'}</td>
+                            <td>
+                                <button onclick="viewStudentDetail(${student.id})">View</button>
+                                ${student.status === 'pending' ? `<button class="btn-success" onclick="approveStudent(${student.id})">Approve</button>` : ''}
+                                ${student.status === 'approved' && !student.is_mentor ? `<button class="btn-warning" onclick="promoteToMentor(${student.id})">Promote</button>` : ''}
+                                <button class="btn-danger" onclick="deleteStudent(${student.id})">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                tableHTML += '</table>';
+                document.getElementById('students-data').innerHTML = tableHTML;
+            } catch (error) {
+                console.error('Error loading students:', error);
+                alert('Failed to load students');
+            }
+        }
+
+        function getRoleBadge(role) {
+            const roleLower = role.toLowerCase();
+            return `<span class="badge badge-${roleLower}">${roleLower}</span>`;
+        }
+
+
+
+        fetch("https://eventdb.onrender.com/all-mentors/students/intern-attained")
+      .then(response => response.json())
+      .then(data => {
+        const tableBody = document.querySelector("#studentsTable tbody");
+        let count = 1;
+
+        data.data.forEach(mentor => {
+          if (mentor.students && mentor.students.length > 0) {
+            mentor.students.forEach(student => {
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                <td>${count++}</td>
+                <td>${student.first_name}</td>
+                <td>${student.email}</td>
+                <td>${student.admin_intern_attained}</td>
+                <td>${mentor.mentor_name}</td>
+                <td>${mentor.mentor_email}</td>
+              `;
+              tableBody.appendChild(row);
+            });
+          }
+        });
+      })
+      .catch(error => {
+        console.error("Error fetching student data:", error);
+        alert("Failed to load student data.");
+      });
+
+      async function viewStudentDetail(studentId) {
+  try {
+    currentStudentId = studentId;
+
+    // 1. Fetch student details
+    const response = await fetch(`${BASE_URL}/admin/student/${studentId}`);
+    const student = await response.json();
+
+    // 2. Fetch student's event-wise targets
+    const eventResponse = await fetch(`${BASE_URL}/api/targets/student/view-mine?student_id=${studentId}`);
+    const eventData = await eventResponse.json();
+    const events = eventData.success ? eventData.data : [];
+
+    // 3. Create base student detail HTML
+    let detailHTML = `
+      <h3>Student Details</h3>
+      <p><strong>ID:</strong> ${student.id}</p>
+      <p><strong>Name:</strong> ${student.first_name} ${student.last_name}</p>
+      <p><strong>Gender:</strong> ${student.gender}</p>
+      <p><strong>Contact:</strong> ${student.contact_number}</p>
+      <p><strong>Email:</strong> ${student.email}</p>
+      <p><strong>College:</strong> ${student.college_name}</p>
+      <p><strong>Status:</strong> <span class="badge badge-${student.status.toLowerCase()}">${student.status}</span></p>
+      <p><strong>Role:</strong> ${getRoleBadge(student.role)}</p>
+      <p><strong>Referral Code:</strong> ${student.referral_code || 'N/A'}</p>
+      <p><strong>Referrer:</strong> ${student.referrer?.first_name || 'N/A'} ${student.referrer?.last_name || ''}</p>
+      <p><strong>Payment Method : </strong>${student.payment_method || 'N/A'}</p>
+      <p><strong>Payment Number:</strong> ${student.payment_number || 'N/A'}</p>
+      <h4>Uploaded Images</h4>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        ${student.clg_id_photo_url ? `<div><p><strong>College ID:</strong></p><img src="${student.clg_id_photo_url}" style="max-width: 150px;"></div>` : ''}
+        ${student.photo_url ? `<div><p><strong>Photo:</strong></p><img src="${student.photo_url}" style="max-width: 150px;"></div>` : ''}
+        ${student.signature_photo_url ? `<div><p><strong>Signature:</strong></p><img src="${student.signature_photo_url}" style="max-width: 150px;"></div>` : ''}
+      </div>
+    `;
+
+    // 4. Add event-wise progress
+    if (events.length > 0) {
+      detailHTML += `
+        <h4 class="mt-4">🎯 Event Targets</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead class="table-light">
+              <tr>
+                <th>Event</th>
+                <th>Target</th>
+                <th>Attained</th>
+                <th>Progress</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${events.map(ev => {
+                const percent = ev.target ? Math.round((ev.attained / ev.target) * 100) : 0;
+                return `
+                  <tr>
+                    <td>${ev.event_title}</td>
+                    <td>${ev.target}</td>
+                    <td>${ev.attained}</td>
+                    <td>
+                      <div class="progress" style="height: 6px;">
+                        <div class="progress-bar bg-success" role="progressbar"
+                          style="width: ${percent}%"
+                          aria-valuenow="${percent}"
+                          aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                      <small>${percent}%</small>
+                    </td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    // 5. Finalize
+    detailHTML += `<br><button onclick="showSection('students-section')">Back to List</button>`;
+    document.getElementById('student-detail').innerHTML = detailHTML;
+    showSection('student-detail-section');
+
+  } catch (error) {
+    console.error('Error loading student details:', error);
+    alert('Failed to load student details');
+  }
+}
+
+
+        async function approveStudent(studentId) {
+            if (!confirm('Are you sure you want to approve this student?')) return;
+            
+            try {
+                const response = await fetch(`${BASE_URL}/students/approve/${studentId}`, {
+                    method: 'PUT'
+                });
+                
+                if (response.ok) {
+                    alert('Student approved successfully!');
+                    loadAllStudents();
+                } else {
+                    throw new Error('Approval failed');
+                }
+            } catch (error) {
+                console.error('Error approving student:', error);
+                alert('Failed to approve student');
+            }
+        }
+
+        async function promoteToMentor(studentId) {
+            if (!confirm('Are you sure you want to promote this student to mentor?')) return;
+            
+            try {
+                const response = await fetch(`${BASE_URL}/students/promote/${studentId}`, {
+                    method: 'PUT'
+                });
+                
+                if (response.ok) {
+                    alert('Student promoted to mentor successfully!');
+                    loadAllStudents();
+                } else {
+                    throw new Error('Promotion failed');
+                }
+            } catch (error) {
+                console.error('Error promoting student:', error);
+                alert('Failed to promote student');
+            }
+        }
+
+        async function deleteStudent(studentId) {
+            if (!confirm('Are you sure you want to delete this student?')) return;
+            
+            try {
+                const response = await fetch(`${BASE_URL}/students/${studentId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    alert('Student deleted successfully!');
+                    loadAllStudents();
+                } else {
+                    throw new Error('Deletion failed');
+                }
+            } catch (error) {
+                console.error('Error deleting student:', error);
+                alert('Failed to delete student');
+            }
+        }
+
+       async function loadAllMentors() {
+    try {
+        const response = await fetch(`${BASE_URL}/api/targets/admin/view-allAdvanced`);
+        const data = await response.json();
+        const allTargets = data.data;
+        console.log('All targets data:', allTargets);
+        // Filter only mentor entries (role === 'mentor')
+        const mentors = allTargets.filter(entry => entry.user_role !== 'student');
+
+        let tableHTML = `
+            <table border="1">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>evnent title</th>
+                    <th>Mentor Target</th>
+                    <th>Mentor Attained</th>
+                    <th>Downline Count</th>
+                    <th>Downline Attined Total</th>
+                </tr>
+        `;
+
+        mentors.forEach(mentor => {
+            const fullName = `${mentor.first_name} ${mentor.last_name}`;
+            const downlineProgress = `${mentor.downline_total_attained}`;
+
+            tableHTML += `
+                <tr class="role-mentor">
+                    <td>${mentor.user_id}</td>
+                    <td>${fullName}</td>
+                    <td>${mentor.event_title}</td>
+                    <td>${mentor.target}</td>
+                    <td>${mentor.attained}</td>
+                    <td>${mentor.downline_count}</td>
+                    <td>${downlineProgress}</td>
+                </tr>
+            `;
+        });
+
+        tableHTML += '</table>';
+        document.getElementById('mentors-data').innerHTML = tableHTML;
+
+    } catch (error) {
+        console.error('Error loading mentors:', error);
+        alert('Failed to load mentors');
+    }
+}
+
+// ✅ Modified to use detailed downline view with progress
+async function viewMentorDownline(mentorId) {
+    try {
+        const response = await fetch(`${BASE_URL}/api/targets/admin/downlines-with-progress/${mentorId}`);
+        const result = await response.json();
+
+        const targets = result.data;
+
+        if (!targets || targets.length === 0) {
+            alert('No downlines found for this mentor');
+            return;
+        }
+
+        let downlineHTML = `
+            <h3>Mentor Downline - Event Progress</h3>
+            <table border="1">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Event</th>
+                    <th>Target</th>
+                    <th>Attained</th>
+                </tr>
+        `;
+
+        targets.forEach(entry => {
+            const fullName = `${entry.first_name} ${entry.last_name}`;
+            downlineHTML += `
+                <tr>
+                    <td>${fullName}</td>
+                    <td>${entry.email}</td>
+                    <td>${entry.event_title}</td>
+                    <td>${entry.target}</td>
+                    <td>${entry.attained}</td>
+                </tr>
+            `;
+        });
+
+        downlineHTML += `
+            </table>
+            <button onclick="showSection('mentors-section')">Back to Mentors</button>
+        `;
+
+        document.getElementById('mentor-downline').innerHTML = downlineHTML;
+        showSection('mentor-downline-section');
+
+    } catch (error) {
+        console.error('Error loading mentor downline:', error);
+        alert('Failed to load mentor downline');
+    }
+}
+
+
+   async function createMentor() {
+    const form = document.getElementById('create-mentor-form');
+    const formData = new FormData(form);
+    const mentorData = Object.fromEntries(formData.entries());
+
+    // Force attained to be 0
+    mentorData.attained = 0;
+
+    // Log all the data being sent
+    console.log('Creating mentor with data:', JSON.stringify(mentorData));
+
+    try {
+        const response = await fetch(`${BASE_URL}/admin/create-mentor`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(mentorData)
+        });
+
+        if (response.ok) {
+            alert('Mentor created successfully!');
+            form.reset();
+            loadAllMentors();
+        } else {
+            throw new Error('Mentor creation failed');
+        }
+    } catch (error) {
+        console.error('Error creating mentor:', error);
+        alert('Failed to create mentor');
+    }
+}
+
+
+        // Approval functions
+async function loadPendingApprovals() {
+  try {
+    const response = await fetch(`${BASE_URL}/students`);
+    const students = await response.json();
+    const pendingStudents = students.filter(s => s.status === 'pending');
+
+    let tableHTML = `
+      <table border="1" class="table table-bordered">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Contact</th>
+            <th>Email</th>
+            <th>College</th>
+            <th>Role</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    pendingStudents.forEach(student => {
+      const roleBadge = getRoleBadge(student.role);
+      const fullName = `${student.first_name} ${student.last_name}`;
+      const contact = student.contact_number;
+
+      const message = `Hi ${fullName}, congratulations! Your registration has been approved by Edwyna. You can now log in and start your journey.`;
+      const whatsappLink = `https://wa.me/${contact}?text=${encodeURIComponent(message)}`;
+      const smsLink = `sms:${contact}?body=${encodeURIComponent(message)}`;
+
+      tableHTML += `
+        <tr class="role-${student.role.toLowerCase()}">
+          <td>${student.id}</td>
+          <td>${fullName}</td>
+          <td>${contact}</td>
+          <td>${student.email}</td>
+          <td>${student.college_name}</td>
+          <td>${roleBadge}</td>
+          <td>
+            <button onclick="approveStudent(${student.id})">Approve</button>
+            <button onclick="viewStudentDetail(${student.id})">View</button>
+            <a href="${whatsappLink}" target="_blank">
+              <button>WhatsApp</button>
+            </a>
+            <a href="${smsLink}">
+              <button>SMS</button>
+            </a>
+          </td>
+        </tr>
+      `;
+    });
+
+    tableHTML += `</tbody></table>`;
+    document.getElementById('approvals-data').innerHTML = tableHTML;
+
+  } catch (error) {
+    console.error('Error loading pending approvals:', error);
+    alert('Failed to load pending approvals');
+  }
+}
+
+
+   <!-- Referral functions -->
+async function loadReferralData() {
+    try {
+        const response = await fetch(`${BASE_URL}/api/referral-data`);
+        const data = await response.json();
+        
+        // Referrers
+        let referrersHTML = '<h3>Referrers</h3><table border="1"><tr><th>Name</th><th>Referral Code</th><th>Referred</th><th>Actions</th></tr>';
+        data.data.referrers.forEach(referrer => {
+            const roleClass = (referrer.role || 'student').toLowerCase();
+            referrersHTML += `
+                <tr class="role-${roleClass}">
+                    <td>${referrer.name}</td>
+                    <td>${referrer.referral_code}</td>
+                    <td>${referrer.total_referred}</td>
+                    <td><button onclick="viewReferralTree('${referrer.referral_code}')">View Tree</button></td>
+                </tr>
+            `;
+        });
+
+        referrersHTML += '</table>';
+        
+        // Students without referral
+        let noReferralHTML = '<h3>Students Without Valid Referral</h3><table border="1"><tr><th>Name</th><th>Email</th><th>Status</th><th>Role</th><th>Invalid Code</th></tr>';
+        data.data.students_without_referral.forEach(student => {
+            const roleBadge = getRoleBadge(student.role || 'student');
+            noReferralHTML += `
+                <tr class="role-${(student.role || 'student').toLowerCase()}">
+                    <td>${student.name}</td>
+                    <td>${student.email}</td>
+                    <td><span class="badge badge-${student.status.toLowerCase()}">${student.status}</span></td>
+                    <td>${roleBadge}</td>
+                    <td>${student.invalid_referrer_code || 'N/A'}</td>
+                </tr>
+            `;
+        });
+        noReferralHTML += '</table>';
+        
+        document.getElementById('referral-data').innerHTML = referrersHTML + noReferralHTML;
+    } catch (error) {
+        console.error('Error loading referral data:', error);
+        alert('Failed to load referral data');
+    }
+}
+
+async function viewReferralTree(referralCode) {
+    try {
+        const response = await fetch(`${BASE_URL}/students/referral-tree/${referralCode}`);
+        const tree = await response.json();
+        
+        // Calculate total attained for the entire tree
+        let totalTreeAttained = 0;
+        tree.forEach(member => {
+            totalTreeAttained += member.attained || 0;
+        });
+        
+        let treeHTML = `<h3>Referral Tree:</h3>
+                        <table border="1">
+                            <tr>
+                                <th>Level</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Role</th>
+                                <th>Referrals</th>
+                            </tr>`;
+        
+        tree.forEach(member => {
+            const roleBadge = getRoleBadge(member.role || 'student');
+            treeHTML += `
+                <tr class="role-${(member.role || 'student').toLowerCase()}">
+                    <td>${member.level}</td>
+                    <td style="padding-left: ${member.level * 15}px">${member.first_name} ${member.last_name}</td>
+                    <td>${member.email}</td>
+                    <td><span class="badge badge-${member.status.toLowerCase()}">${member.status}</span></td>
+                    <td>${roleBadge}</td>
+                    <td>${member.referral_count}</td>
+                </tr>
+            `;
+        });
+        
+        treeHTML += '</table><button onclick="showSection(\'referrals-section\')">Back to Referrals</button>';
+        
+        document.getElementById('referral-tree').innerHTML = treeHTML;
+        showSection('referral-tree-section');
+    } catch (error) {
+        console.error('Error loading referral tree:', error);
+        alert('Failed to load referral tree');
+    }
+}
+
+
+
+// Filter functions for all sections
+function filterDashboard() {
+    const query = document.getElementById('dashboard-search').value.toLowerCase();
+    const rows = document.querySelectorAll('#targets-table-body tr');
+    
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(query) ? '' : 'none';
+    });
+}
+
+function filterStudents() {
+    const query = document.getElementById('student-search').value.toLowerCase();
+    const rows = document.querySelectorAll('#students-data tr');
+    
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(query) ? '' : 'none';
+    });
+}
+
+function filterMentors() {
+    const query = document.getElementById('mentor-search').value.toLowerCase();
+    const rows = document.querySelectorAll('#mentors-data tr');
+    
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(query) ? '' : 'none';
+    });
+}
+
+function filterApprovals() {
+    const query = document.getElementById('approval-search').value.toLowerCase();
+    const rows = document.querySelectorAll('#approvals-data tr');
+    
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(query) ? '' : 'none';
+    });
+}
+
+function filterReferrals() {
+    const query = document.getElementById('referral-search').value.toLowerCase();
+    const rows = document.querySelectorAll('#referral-data tr');
+    
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(query) ? '' : 'none';
+    });
+}
+
+function filterUnassigned() {
+    const query = document.getElementById('unassigned-search').value.toLowerCase();
+    const rows = document.querySelectorAll('#unassigned-data tr');
+    
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(query) ? '' : 'none';
+    });
+}
+
+function filterTargets() {
+    const query = document.getElementById('target-search').value.toLowerCase();
+    const rows = document.querySelectorAll('#targets-data tr');
+    
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(query) ? '' : 'none';
+    });
+}
+
+
+        async function generateReport() {
+            const referralCode = document.getElementById('mentor-select').value;
+            if (!referralCode) {
+                alert('Please select a mentor');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${BASE_URL}/report/${referralCode}`);
+                const report = await response.json();
+                
+                let reportHTML = `
+                    <div class="stat-card" style="text-align: left; margin-bottom: 20px;">
+                        <h3>Report for ${report.referrer_name} (${report.referrer_code})</h3>
+                        <p><strong>Total Referred Students:</strong> ${report.total_referred_students}</p>
+                        <p><strong>Total Attained by Referred:</strong> ${report.total_attained_by_referred}</p>
+                    </div>
+                    
+                    <h4>Referred Students</h4>
+                    <table border="1">
+                        <tr>
+                            <th>Name</th>
+                            <th>Attained</th>
+                        </tr>
+                `;
+                
+                report.referred_students.forEach(student => {
+                    reportHTML += `
+                        <tr>
+                            <td>${student.name}</td>
+                            <td>${student.attained}</td>
+                        </tr>
+                    `;
+                });
+                
+                reportHTML += `
+                    </table>
+                    <h4 style="margin-top: 20px;">Students Without Referrer</h4>
+                    <table border="1">
+                        <tr>
+                            <th>Name</th>
+                            <th>Attained</th>
+                        </tr>
+                `;
+                
+                report.students_without_referrer.forEach(student => {
+                    reportHTML += `
+                        <tr>
+                            <td>${student.name}</td>
+                            <td>${student.attained}</td>
+                        </tr>
+                    `;
+                });
+                
+                reportHTML += '</table>';
+                document.getElementById('report-results').innerHTML = reportHTML;
+            } catch (error) {
+                console.error('Error generating report:', error);
+                alert('Failed to generate report');
+            }
+        }
+
+        // Unassigned students functions
+        async function loadUnassignedStudents() {
+            try {
+                // Get all students
+                const studentsRes = await fetch(`${BASE_URL}/admin/students`);
+                const students = await studentsRes.json();
+                
+                // Filter students without referrers (only students, not admins/mentors)
+                const unassignedStudents = students.filter(s => 
+                    (!s.referrer_code || s.referrer_code.trim() === '') && 
+                    s.role === 'student'
+                );
+                
+                // Get admin and mentor attainment counts
+                const adminsMentorsRes = await fetch(`${BASE_URL}/admin/mentors`);
+                const adminsMentors = await adminsMentorsRes.json();
+                
+                // Display unassigned students
+                let tableHTML = `
+                    <h3>Students Without Referrers (${unassignedStudents.length})</h3>
+                    <table border="1">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>College</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                `;
+                
+                unassignedStudents.forEach(student => {
+                    tableHTML += `
+                        <tr class="role-student">
+                            <td>${student.id}</td>
+                            <td>${student.first_name} ${student.last_name}</td>
+                            <td>${student.email}</td>
+                            <td>${student.college_name}</td>
+                            <td><span class="badge badge-${student.status.toLowerCase()}">${student.status}</span></td>
+                            <td>
+                                <button onclick="viewStudentDetail(${student.id})">View</button>
+                                <button onclick="assignStudentToMentor(${student.id})">Assign</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                tableHTML += '</table>';
+                
+                // Display admin/mentor attainment
+                let attainmentHTML = '<h3 style="margin-top: 30px;">Admin/Mentor Attainment</h3><table border="1"><tr><th>Name</th><th>Role</th><th>Downline Count</th></tr>';
+                
+                adminsMentors.forEach(am => {
+                    const roleBadge = getRoleBadge(am.role || 'mentor');
+                    attainmentHTML += `
+                        <tr class="role-${(am.role || 'mentor').toLowerCase()}">
+                            <td>${am.mentor_name}</td>
+                            <td>${roleBadge}</td>
+                            <td>${am.downline_count}</td>
+                        </tr>
+                    `;
+                });
+                
+                attainmentHTML += '</table>';
+                
+                document.getElementById('unassigned-data').innerHTML = tableHTML + attainmentHTML;
+            } catch (error) {
+                console.error('Error loading unassigned students:', error);
+                alert('Failed to load unassigned students');
+            }
+        }
+
+        async function assignStudentToMentor(studentId) {
+            const mentorId = prompt("Enter Mentor ID to assign this student to:");
+            if (!mentorId) return;
+            
+            try {
+                const response = await fetch(`${BASE_URL}/admin/assign-students`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        mentor_id: mentorId,
+                        student_ids: [studentId]
+                    })
+                });
+                
+                if (response.ok) {
+                    alert('Student assigned successfully!');
+                    loadUnassignedStudents();
+                } else {
+                    throw new Error('Assignment failed');
+                }
+            } catch (error) {
+                console.error('Error assigning student:', error);
+                alert('Failed to assign student');
+            }
+        }
+
+        // Student assignment function
+        async function assignStudents() {
+            const mentorId = document.getElementById('assign-mentor-id').value;
+            const studentIds = document.getElementById('assign-student-ids').value
+                .split(',')
+                .map(id => id.trim())
+                .filter(id => id);
+            
+            if (!mentorId || studentIds.length === 0) {
+                alert('Please enter both mentor ID and student IDs');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${BASE_URL}/admin/assign-students`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        mentor_id: mentorId,
+                        student_ids: studentIds
+                    })
+                });
+                
+                if (response.ok) {
+                    alert('Students assigned successfully!');
+                    loadAllStudents();
+                } else {
+                    throw new Error('Assignment failed');
+                }
+            } catch (error) {
+                console.error('Error assigning students:', error);
+                alert('Failed to assign students');
+            }
+        }
+         const user = JSON.parse(localStorage.getItem('user')) || {};
+const token = localStorage.getItem('jwtToken');
+
+if (user.role !== 'admin' || !token) {
+  document.body.innerHTML = `
+    <div style="height: 100vh; background-color: #111827; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; font-family: 'Outfit', sans-serif; text-align: center; padding: 20px;">
+      <h1 style="font-size: 2rem; margin-bottom: 0.5rem;">🚫 Unauthorized Access</h1>
+      <p style="font-size: 1rem; color: #d1d5db;">You do not have permission to view this page.</p>
+    </div>
+  `;
+}
+  
+  
+    </script>
+</body>
+</html>

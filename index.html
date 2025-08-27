@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Google Sheets Read/Write</title>
+  <style>
+    table { border-collapse: collapse; width: 50%; margin: 20px auto; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    form { width: 300px; margin: 20px auto; display: flex; flex-direction: column; }
+    input { margin-bottom: 10px; padding: 8px; }
+    button { padding: 8px; }
+  </style>
+</head>
+<body>
+  <h2 style="text-align:center;">Google Sheets API Demo</h2>
+
+  <form id="dataForm">
+    <input type="text" id="name" placeholder="Name" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="number" id="score" placeholder="Score" required>
+    <button type="submit">Add Row</button>
+  </form>
+
+  <table id="sheetData">
+    <thead>
+      <tr><th>Name</th><th>Email</th><th>Score</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const API_BASE = window.location.origin + '/api';
+
+
+    // Fetch and display data
+    async function loadData() {
+      const res = await fetch(`${API_BASE}/read`);
+      const { data } = await res.json();
+      const tbody = document.querySelector('#sheetData tbody');
+      tbody.innerHTML = '';
+      data.slice(1).forEach(row => {
+        const tr = document.createElement('tr');
+        row.forEach(cell => {
+          const td = document.createElement('td');
+          td.textContent = cell;
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Handle form submission
+    document.getElementById('dataForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const score = document.getElementById('score').value;
+
+      await fetch(`${API_BASE}/write`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, score }),
+      });
+
+      e.target.reset();
+      loadData();
+    });
+
+    // Initial load
+    loadData();
+  </script>
+</body>
+</html>
